@@ -62,15 +62,21 @@ class Product {
             $_val .= "'$json_content[$name]',";  
         };
 
-        $cmd = rtrim($_cmd, ",");            
-        $val = rtrim($_val, ","); 
-        $cmd .=" )";
-        $val .= " )";
+        $cmd = rtrim($_cmd, ",")." )";            
+        $val = rtrim($_val, ",")." )"; 
+        // $cmd .=" )";
+        // $val .= " )";
         $sql = $cmd.$val;
 
         $result = [];       // store the result of create record in datavvase
         if (mysqli_query($db, $sql)  === TRUE) {
-            $result = jsendFormatter('success', array("result" => "Product '".$json_content["name"]."' is created successfully"));
+            $result = jsendFormatter(
+                'success', 
+                array(
+                    "result" => "Product '".$json_content["name"]."' is created successfully",
+                    "id" => mysqli_insert_id($db)
+                )
+            );
         } else {
             $result = jsendFormatter('error', [$db -> error]);
         }
@@ -85,6 +91,29 @@ class Product {
     public static function deleteProduct(array $params, array $json_content, object $db) : string{
         // { code here }
         return "deleteProduct";         
+    }
+
+
+
+    // DELETE /product/delete-products
+    public static function deleteProducts(array $params, array $json_content, object $db) : string{
+        
+        $rl = $json_content['removeList'];
+        $sql = 'DELETE FROM ProductTable WHERE id IN';
+        $_ids = "";
+
+        foreach($rl as $id){
+            $_ids .= "$id,";
+        };
+        $ids = rtrim($_ids,",");
+        $sql .= "($ids)";
+
+        if (mysqli_query($db, $sql) === TRUE) {
+            $result = jsendFormatter('success', array("result" => "items (id = $ids) are delected."));
+        } else {
+            $result = jsendFormatter('error', [$db -> error]);
+        }
+        return $result;       
     }
 
 

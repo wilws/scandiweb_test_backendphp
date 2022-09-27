@@ -31,16 +31,18 @@ class Validator{
 
     public static function  createProductCheck(array $json_content){
 
+        
         // This function mainly for validating the input of "product/create-product" API
 
-        $num_arr = ["price","dvd_size","dvd_size","book_weight","furniture_width","furniture_length"];   // Check if number or number string
-        $str_arr = ["sku","name"];                                                                       // Check if null and length
-        $type_arr = ["type"];                                                                            // Check if "Book"/ "Funiture" / "DVD"
+        $num_arr = ["price"];                    // Check if number or number string
+        $str_arr = ["sku","name","spec"];        // Check if null and length
+        $type_arr = ["productType"];                    // Check if "Book"/ "Funiture" / "DVD"
 
-        $validation = true;                                                                              // Pre-set it is true
-        $error_msg = "";                                                                                 // Stroe error message
+        $validation = true;                      // Pre-set it is true
+        $error_msg = "";                         // Stroe error message
 
         foreach($num_arr as $key){
+
             $check = checkNum([$key => $json_content[$key]]);
             if ($check !== true){
                 $validation = false;

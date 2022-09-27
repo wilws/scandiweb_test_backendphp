@@ -16,9 +16,11 @@
 
     // **** Header Config **** //
     header("Access-Control-Allow-Origin: *");
-    header("Content-Type: application/json; charset=UTF-8");
+    header("Content-Type: application/json");
     header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PUT, PATCH");
-    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    // header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+    // header("Access-Control-Allow-Credentials: true");
 
 
     // **** Routing Control **** //

@@ -13,8 +13,8 @@
         private $put;
 
 
-        public function __construct(array $get, array $post, array $delete, array $patch,array $put)
-        {
+        public function __construct(array $get, array $post, array $delete, array $patch,array $put){
+      
             $this->get = $get;
             $this->post = $post;
             $this->delete = $delete;
@@ -25,6 +25,7 @@
 
         public function apiProcessor(string $method, array $params, array $json_content, object $db) : string {
 
+            
            $register = [];                                                         // Store the "API:Func" mapping object
            eval('$register = $this->'.strtolower($method).";");                    // assign a correct register according to the method (eg: GET / POST / DELETE )
            $response_func = $register['/'.$params[0]] ?? NULL;                     // If in the register no route is matched, set correspondent function $response_fun as "NULL"

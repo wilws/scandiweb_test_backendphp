@@ -39,7 +39,10 @@
             '/delete-product' => "Product::deleteProduct",
 
             // DELETE /product/clear-products           #delete all products
-            '/clear-products' => "Product::clearProduct"
+            '/clear-products' => "Product::clearProduct",
+
+            // DELETE /product/delete-products
+            '/delete-products' => "Product::deleteProducts",
         ),
 
 
