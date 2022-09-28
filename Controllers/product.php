@@ -3,6 +3,10 @@ require("./Models/product.php");
 require_once("./Helper/json_response_formatter.php");
 require("./Middlewares/validator.php");
 
+
+// This Product controller class provide static functions matched with the API maping in Routes/urls/product.php
+
+
 class Product {
 
     // GET /product/get-products
@@ -15,7 +19,7 @@ class Product {
         if (count($records)> 0){
             $sanitised_output = [];
             foreach ($records as $arr ){
-                array_push($sanitised_output,Validator::outputSanitisation($arr));
+                array_push($sanitised_output,Validator::outputSanitisation($arr));    // Sanitise to output
             }
             $result = jsendFormatter('success',$sanitised_output);
         } else {
@@ -26,10 +30,10 @@ class Product {
 
 
     // DELETE /product/get-product/{id}
-    public static function getProduct(array $params, array $json_content, object $db) : string{
+    // public static function getProduct(array $params, array $json_content, object $db) : string{
         // { code here }
-        return "getProduct";         
-    }
+        // return "getProduct";         
+    // }
 
 
 
@@ -64,8 +68,6 @@ class Product {
 
         $cmd = rtrim($_cmd, ",")." )";            
         $val = rtrim($_val, ",")." )"; 
-        // $cmd .=" )";
-        // $val .= " )";
         $sql = $cmd.$val;
 
         $result = [];       // store the result of create record in datavvase
@@ -88,10 +90,10 @@ class Product {
 
 
     // DELETE /product/delete-product/{id}
-    public static function deleteProduct(array $params, array $json_content, object $db) : string{
-        // { code here }
-        return "deleteProduct";         
-    }
+    // public static function deleteProduct(array $params, array $json_content, object $db) : string{
+    //     // { code here }
+    //     return "deleteProduct";         
+    // }
 
 
 
@@ -121,16 +123,16 @@ class Product {
 
 
     // DELETE /product/clear-products
-    public static function clearProduct(array $params, array $json_content, object $db) : string{
-        $sql = 'DELETE FROM ProductTable';
-        $result = [];       
-        if (mysqli_query($db, $sql)  === TRUE) {
-            $result = jsendFormatter('success', array("result" => "All records are delected."));
-        } else {
-            $result = jsendFormatter('error', [$db -> error]);
-        }
-        return $result;
-    }
+    // public static function clearProduct(array $params, array $json_content, object $db) : string{
+    //     $sql = 'DELETE FROM ProductTable';
+    //     $result = [];       
+    //     if (mysqli_query($db, $sql)  === TRUE) {
+    //         $result = jsendFormatter('success', array("result" => "All records are delected."));
+    //     } else {
+    //         $result = jsendFormatter('error', [$db -> error]);
+    //     }
+    //     return $result;
+    // }
 }
 
 

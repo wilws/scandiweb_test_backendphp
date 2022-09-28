@@ -2,10 +2,11 @@
 
 
     // This Router matches the APIs with the correponding controller
-    // In path "Routers/urls", this router will be instansided with defined "API:Function" object as arguments 
+    // In path "Routers/urls", this router will be instansided with "API path:Function" object as arguments 
 
     class Router {
 
+        // These registers store APIs:Function.
         private $get;
         private $post;
         private $delete;
@@ -14,7 +15,7 @@
 
 
         public function __construct(array $get, array $post, array $delete, array $patch,array $put){
-      
+
             $this->get = $get;
             $this->post = $post;
             $this->delete = $delete;
@@ -26,7 +27,7 @@
         public function apiProcessor(string $method, array $params, array $json_content, object $db) : string {
 
             
-           $register = [];                                                         // Store the "API:Func" mapping object
+           $register = [];                                                         // To store the "API:Func" mapping object
            eval('$register = $this->'.strtolower($method).";");                    // assign a correct register according to the method (eg: GET / POST / DELETE )
            $response_func = $register['/'.$params[0]] ?? NULL;                     // If in the register no route is matched, set correspondent function $response_fun as "NULL"
 
@@ -39,8 +40,9 @@
 
 
         public static function getApiContent(string $url) : array {
-
-            // This static function break the URL into different portion: eg:
+            
+            // This static function is used in the index.php.
+            // It break the URL into different portion: eg:
             // " <domain>/product/get-product/5 "   will become => 
             // 
             // $arrObj = array (

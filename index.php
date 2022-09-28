@@ -18,7 +18,6 @@
     header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json");
     header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PUT, PATCH");
-    // header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     // header("Access-Control-Allow-Credentials: true");
 
@@ -31,17 +30,14 @@
 
     $url = $_SERVER['REQUEST_URI'];                                             // Get the url - eg: <domain>/product/get-products
     $api_content = Router::getApiContent($url);                                 // explode the url - eg: "<domain>/product/get-product/1" will become :
-                                                                                // ["apiGroupName" = "product", "params" = ["get-products","1"];
+                                                                                // ["apiGroupName":"product", "params":["get-products","1"]];
                                                                                 // server hence konws that :
-                                                                                // 1) it is a APIs of group  "Product";           
+                                                                                // 1) it is a APIs of group  "product";           
                                                                                 // 2) It has two params: [0] => "get-products"    # user wanna view a product
-                                                                                ///                      [1] => "1"               # the product's id is "1"
+                                                                                //                       [1] => "1"               # the product's id is "1"
 
 
-
-
-
-    $result = "";           // To store the result of fetched result or error 
+    $result = "";                                                               // To store the  fetched result or error in Json format
 
     // Step 2 : Import relevant routers
     if( !@include("./Routers/urls/".$api_content["apiGroupName"].".php") ){                    // Select the correct router regrading the "apiGroupName" 

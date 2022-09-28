@@ -3,8 +3,9 @@
     require("create_table.class.php");
 
 
-    // Create Models in MySql by creating Class
-    // Use static function to extract data once the model is created
+    // Create tables in MySql by making a Class with defind database attributes as below.
+    // "Create function" is in the parant Class "Table" (create_table.class.php)
+
 
     Class ProductTable extends Table {
 
@@ -14,19 +15,14 @@
         protected $price = 'FLOAT(9,2) NOT NULL';
         protected $productType  = 'VARCHAR(30) NOT NULL';
         protected $spec  = 'VARCHAR(250) NOT NULL';
-        // protected $dvd_size = 'FLOAT(9,2) NOT NULL';
-        // protected $book_weight = 'FLOAT(9,2) NOT NULL';
-        // protected $furniture_height = 'FLOAT(9,2) NOT NULL';
-        // protected $furniture_width = 'FLOAT(9,2) NOT NULL';
-        // protected $furniture_length = 'FLOAT(9,2) NOT NULL';
-
     }
 
 
-    // Check if the table exist. Create one if not
+    // This page will be imported in controller to check if the `ProductTable` exist in MySql database. Create one if not
+
     $table_exist = mysqli_query($db,'select 1 from `ProductTable` LIMIT 1');
     if($table_exist == FALSE)  {
-        // var_dump('table not exist');   
-        new ProductTable("ProductTable",$db);
-    } 
-?>
+        new ProductTable("ProductTable",$db);          // The first arg is the name of the Class. It must be exactly the same as the class name.  
+    }                                                  // The second arg is the instance of database from "db_connect.php". It gives connection for the parent class to 
+                                                       //  access and create table in database
+?>                                                     

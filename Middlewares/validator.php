@@ -35,10 +35,10 @@ class Validator{
         // This function mainly for validating the input of "product/create-product" API
 
         $num_arr = ["price"];                    // Check if number or number string
-        $str_arr = ["sku","name","spec"];        // Check if null and length
-        $type_arr = ["productType"];                    // Check if "Book"/ "Funiture" / "DVD"
+        $str_arr = ["sku","name","spec"];        // Check if null and length (max:30 char)
+        $type_arr = ["productType"];             // Check if "Book"/ "Funiture" / "DVD"
 
-        $validation = true;                      // Pre-set it is true
+        $validation = true;                      // Pre-set it is true first. if invalid data found, it will be set as false and return to caller with $error_msg
         $error_msg = "";                         // Stroe error message
 
         foreach($num_arr as $key){
@@ -67,7 +67,7 @@ class Validator{
         }
 
         return array(
-            "validation" => $validation,
+            "validation" => $validation,           
             "error_msg" => $error_msg
         );
     }

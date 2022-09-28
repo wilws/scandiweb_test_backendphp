@@ -1,5 +1,6 @@
 <?php
 
+//  This is a collection of helper functions
 
 //  use JSend specification to return result.
 function jsendFormatter(string $status, array $content):string {
