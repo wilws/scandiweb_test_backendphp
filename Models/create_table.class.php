@@ -6,8 +6,8 @@
 
         protected $table_name = "";                                                                         // The child class name as well as the table name in database.
         protected $db;                                                                                      // Instance of database for Mysql connection
-        protected $id = 'INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY';                                       // Create Id colnum statement, for construct a sql statement
-        protected $create_time = 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';         // Create create_time colnum statement, for construct a sql statement
+        protected $id = 'INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY';                                       // Create Id colnum statement, for constructing a sql statement
+        protected $create_time = 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';         // Create create_time colnum statement, for constructing a sql statement
 
 
         public function __construct(string $table_name, object $db) {

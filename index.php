@@ -2,24 +2,18 @@
     declare(strict_types = 1);
     require("./Routers/router.class.php");
     require("./Helper/json_response_formatter.php");
-
-
-    // **** DataBase Config **** //
-    define("HOST","");
-    define("USER","");
-    define("PASSWORD","");
-    define("NAME","");
-    define("PORT","");
-    require("./Models/db_connect.php");
-
-
+    require("./Models/db_connect.php");                                       
+    
+ 
 
     // **** Header Config **** //
-    header("Access-Control-Allow-Origin: *");
+    $_SERVER['ALLOW_ORIGIN'] = "*";
+    header("Access-Control-Allow-Origin: ".$_SERVER['ALLOW_ORIGIN']);         // set ALLOW_ORIGIN in AWS EC2 instance
     header("Content-Type: application/json");
     header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PUT, PATCH");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
     // header("Access-Control-Allow-Credentials: true");
+
 
 
     // **** Routing Control **** //
@@ -36,7 +30,7 @@
                                                                                 // 2) It has two params: [0] => "get-products"    # user wanna view a product
                                                                                 //                       [1] => "1"               # the product's id is "1"
 
-
+  
     $result = "";                                                               // To store the  fetched result or error in Json format
 
     // Step 2 : Import relevant routers

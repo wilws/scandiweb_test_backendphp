@@ -4,7 +4,7 @@
 
 
     // Create tables in MySql by making a Class with defind database attributes as below.
-    // "Create function" is in the parant Class "Table" (create_table.class.php)
+    // "Create function" is in the parent Class "Table" (create_table.class.php)
 
 
     Class ProductTable extends Table {
