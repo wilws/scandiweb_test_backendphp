@@ -42,7 +42,7 @@ class Product {
     public static function createProduct(array $params, array $json_content, object $db) : string {
 
         // Implement middleware to validate the data in $json_content
-        $input_check = Validator::createProductCheck($json_content);
+        $input_check = Validator::createProductCheck($json_content,$db);
         if(!$input_check['validation']){
             return jsendFormatter("error",[rtrim($input_check['error_msg'], ";")]);     // exit function if validation is failed
         }

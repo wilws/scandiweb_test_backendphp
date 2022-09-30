@@ -94,7 +94,12 @@ function checkNull(array $arr){
     }
 }
 
-
+function checkNoOfRowInDB(string $data, string $table, string $colnum, object $db){
+        // Database involved function
+        $sql = "SELECT * FROM $table WHERE $colnum='$data'";
+        $fetch = $db->query($sql);
+        return $fetch->num_rows;
+}
 
 
 

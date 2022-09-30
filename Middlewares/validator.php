@@ -28,8 +28,16 @@ class Validator{
         return $sanitised_arr;
     }
 
+    public static function  checkDuplicateinDB(string $data, string $table, string $colnum, object $db){
+        if (checkNoOfRowInDB($data, $table, $colnum, $db) > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-    public static function  createProductCheck(array $json_content){
+
+    public static function createProductCheck(array $json_content, object $db){
 
         
         // This function mainly for validating the input of "product/create-product" API
@@ -65,6 +73,19 @@ class Validator{
                 $error_msg .= $check. "; ";
             } 
         }
+
+        // Check if dupilcation of sku
+        
+
+        if (self::checkDuplicateinDB($json_content['sku'], 'ProductTable', 'sku', $db)){
+            $validation = false;
+            $error_msg .= 'The sku name is already used in other product. Please choose other name for the sku.';
+        } 
+
+
+        
+
+        
 
         return array(
             "validation" => $validation,           
