@@ -29,7 +29,7 @@
     // )
 
     // - Step 3
-    // Then create a "cart.php" (lowercase) file in under 'Controllers' folder:
+    // Then create a "cart.php" (lowercase) file under 'Controllers' folder:
     // Class Cart {
     //    public static function addCart() {...}
     // } 
