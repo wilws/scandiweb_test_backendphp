@@ -7,8 +7,7 @@
  
 
     // **** Header Config **** //
-    $_SERVER['ALLOW_ORIGIN'] = "*";
-    header("Access-Control-Allow-Origin: ".$_SERVER['ALLOW_ORIGIN']);         // set ALLOW_ORIGIN in AWS EC2 instance
+    header("Access-Control-Allow-Origin: * ");         
     header("Content-Type: application/json");
     header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PUT, PATCH");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
