@@ -1,25 +1,32 @@
 <?php
-require("./Models/product.php");
-require_once("./Helper/json_response_formatter.php");
-require("./Middlewares/validator.php");
+
+require PATH .'/Models/product.php';
+require PATH .'/Controllers/product.class.php';
+require_once PATH .'/Helper/helperFunctions.php';
 
 
 // This Product controller class provide static functions matched with the API maping in Routes/urls/product.php
 
 
-class Product {
+class ProductController {
 
     // GET /product/get-products
     public static function getProducts(array $params, array $json_content, object $db) : string {
-        
-        $sql = "SELECT * FROM ProductTable";
-        $fetch = $db->query($sql);
-        $records = $fetch->fetch_all(MYSQLI_ASSOC) ?? [];   #MYSQLI_ASSOC = key-value pair
-
-        if (count($records)> 0){
+        $productTable = new ProductTable($db);
+        $records = $productTable->getProducts();
+        if (count($records) > 0){
             $sanitised_output = [];
-            foreach ($records as $arr ){
-                array_push($sanitised_output,Validator::outputSanitisation($arr));    // Sanitise to output
+            foreach ($records as $record ){
+                $product= createProductObject($record); 
+                $productObj = $product['data'];
+                array_push($sanitised_output,array(
+                    'id' => $productObj->getId(),
+                    'sku' => htmlentities(trim($productObj->getSku())),
+                    'name' => htmlentities(trim($productObj->getName())),
+                    'price' => htmlentities(trim($productObj->getPrice())),
+                    'productType' => htmlentities(trim($productObj->getType())),
+                    'spec' => htmlentities(trim($productObj->getSpec())),
+                ));
             }
             $result = jsendFormatter('success',$sanitised_output);
         } else {
@@ -29,116 +36,50 @@ class Product {
     }
 
 
-    // DELETE /product/get-product/{id}
-    // public static function getProduct(array $params, array $json_content, object $db) : string{
-        // { code here }
-        // return "getProduct";         
-    // }
-
-
-
-
     // POST /product/create-product
     public static function createProduct(array $params, array $json_content, object $db) : string {
 
-        // Implement middleware to validate the data in $json_content
-        $input_check = Validator::createProductCheck($json_content,$db);
-        if(!$input_check['validation']){
-            return jsendFormatter("error",[rtrim($input_check['error_msg'], ";")]);     // exit function if validation is failed
-        }
-
-
-        // Construct MySql statement of create record. 
-        $ReflectionClass = new ReflectionClass("ProductTable");          // Get all the properties'name from the model
-        $property_arr = $ReflectionClass->getProperties();               
+        $result = createProductObject($json_content,$db);
+        if($result['state'] !== 'success'){
+            return jsendFormatter('error', [$result['message']]);
+        } 
         
-        $_cmd = "INSERT INTO ProductTable (";                         // construct the first part of the statement
-        $_val = " VALUES (";                                          // construct the value part of the statement
-    
-        foreach($property_arr as $key){
-            $name = $key->getName();                     // extract the properties'name from ReflectionClass object
-            if ($name === "table_name"){continue;}       // no processing on data of "table_name"
-            if ($name === "db"){continue;}               // no processing db instance
-            if ($name === "id"){continue;}               // no processing on data of id. It will be handled by database
-            if ($name === "create_time"){continue;}      // no processing on create_time. It will be handled by database
-          
-            $_cmd .= $name.",";  
-            $_val .= "'$json_content[$name]',";  
-        };
+        $product = $result['data'];
+        $productTable = new ProductTable($db);
+        $result = $productTable->createProduct(
+            $product->getSku(),
+            $product->getName(),
+            $product->getPrice(),
+            $product->getType(),
+            $product->getSpec(),
+        );
 
-        $cmd = rtrim($_cmd, ",")." )";            
-        $val = rtrim($_val, ",")." )"; 
-        $sql = $cmd.$val;
-
-        $result = [];       // store the result of create record in datavvase
-        if (mysqli_query($db, $sql)  === TRUE) {
-            $result = jsendFormatter(
-                'success', 
-                array(
-                    "result" => "Product '".$json_content["name"]."' is created successfully",
-                    "id" => mysqli_insert_id($db)
-                )
-            );
+        if (!$result){
+            return jsendFormatter('error', ['Cannot write product into database']); 
         } else {
-            $result = jsendFormatter('error', [$db -> error]);
+            return jsendFormatter('success', array(
+                'result'=> "Product '".$product->getName()."' is created successfully",
+                'id'=> $db ->insert_id)
+            ); 
         }
-        return $result;
     }
-
-
-
-
-
-    // DELETE /product/delete-product/{id}
-    // public static function deleteProduct(array $params, array $json_content, object $db) : string{
-    //     // { code here }
-    //     return "deleteProduct";         
-    // }
-
-
 
     // DELETE /product/delete-products
     public static function deleteProducts(array $params, array $json_content, object $db) : string{
-        
         $rl = $json_content['removeList'];
-        $sql = 'DELETE FROM ProductTable WHERE id IN';
-        $_ids = "";
-
-        foreach($rl as $id){
-            $_ids .= "$id,";
-        };
-        $ids = rtrim($_ids,",");
-        $sql .= "($ids)";
-
-        if (mysqli_query($db, $sql) === TRUE) {
-            $result = jsendFormatter('success', array("result" => "items (id = $ids) are delected."));
+        $productTable = new ProductTable($db);
+        $result = $productTable->deleteProducts($rl);
+        if (!$result){
+            return jsendFormatter('error', ['Delete failed']); 
         } else {
-            $result = jsendFormatter('error', [$db -> error]);
+            $idString = join(',',$rl);
+            return jsendFormatter('success', array(
+                'result'=> "items (id = $idString) are deleted.")
+            );            
         }
-        return $result;       
+
     }
-
-
-
-
-
-    // DELETE /product/clear-products
-    // public static function clearProduct(array $params, array $json_content, object $db) : string{
-    //     $sql = 'DELETE FROM ProductTable';
-    //     $result = [];       
-    //     if (mysqli_query($db, $sql)  === TRUE) {
-    //         $result = jsendFormatter('success', array("result" => "All records are delected."));
-    //     } else {
-    //         $result = jsendFormatter('error', [$db -> error]);
-    //     }
-    //     return $result;
-    // }
 }
-
-
-
-
-
 
 
 
