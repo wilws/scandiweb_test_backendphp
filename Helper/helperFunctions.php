@@ -126,8 +126,4 @@ function checkNoOfRowInDB(string $data, string $table, string $colnum, object $d
         return $fetch->num_rows;
 }
 
-
-
-
-
 ?>

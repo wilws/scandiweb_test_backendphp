@@ -6,7 +6,6 @@
     
     Class ProductModel extends Model
     {
-
         protected string $sku = 'VARCHAR(30) NOT NULL';
         protected string $name = 'VARCHAR(30) NOT NULL';
         protected string $price = 'FLOAT(9,2) NOT NULL';
@@ -16,8 +15,8 @@
         public function __construct(object $db)
         {
             if(mysqli_query( $db,'select 1 from `ProductTable` LIMIT 1') == FALSE )  {     // If table no exist in db, create one.
-               parent::__construct( "ProductTable" , $db);                                  // The first arg is the name of the Class. It must be exactly the same as the class name.  
-            }                                                                            // The second arg is the instance of database from "db_connect.php". It gives connection for the parent class to  access and create table in database
+               parent::__construct( "ProductTable" , $db);                                 // The first arg is the name of the Class. It must be exactly the same as the class name.  
+            }                                                                            
             $this->db = $db;                                                                                                                                             
         }                                                                                
 

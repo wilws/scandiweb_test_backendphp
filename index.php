@@ -1,14 +1,12 @@
 <?php
     declare(strict_types = 1);
     define('PATH', getcwd());
-    
+
     require PATH .'/app.php';
     require PATH .'/Helper/helperFunctions.php';
     require PATH .'/Models/database.php';  
     require PATH .'/Routers/router.php';
-
-    // import custom router
-    require PATH .'/Routers/product.php';
+    require PATH .'/Routers/product.php'; 
     
     // head config.
     header("Access-Control-Allow-Origin: * ");    
