@@ -62,9 +62,9 @@ class Product extends AbstractProduct
     public function setName(string $name)
     {
         $check = checkString(["name" => $name],30);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->name = $name;
         }
@@ -73,9 +73,9 @@ class Product extends AbstractProduct
     public function setPrice(string $price)
     {
         $check = checkNum(["price" => $price]);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->price = $price;
         }
@@ -84,16 +84,16 @@ class Product extends AbstractProduct
     public function setSku(string $sku, bool $checkUnique=false , ?object $db=null)
     {
         $check = checkString(["sku" => $sku],30);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
 
         } else {
             // Check if unique sku
             if ($checkUnique) {
                 if (checkNoOfRowInDB($sku,'ProductTable', 'sku', $db) > 0) {
                     $this->isValid = false;
-                    $this->error_msg .= 'The sku name is already used in other product. Please choose other name for the sku.';
+                    $this->error_msg .= 'The sku name is already used in other product. Please choose other name for the sku; ';;
                     return;
 
                 } else {
@@ -108,9 +108,9 @@ class Product extends AbstractProduct
     public function setType(string $type)
     {
         $check = checkType(["type" => $type]);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->type = $type;
         }
@@ -143,9 +143,9 @@ class Book extends Product
     {
         
         $check = checkNum(["weight" => $weight]);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->weight = $weight;
             $this->setSpec($this->weight);
@@ -168,9 +168,9 @@ class DVD extends Product
     {
 
         $check = checkNum(["size" => $size]);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->size = $size;
             $this->setSpec($this->size);
@@ -190,9 +190,9 @@ class Furniture extends Product
     public function setWidth(string $width)
     {
         $check = checkNum(["width" => $width]);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->width = $width;
             $this->setFurnitureSpec();
@@ -203,11 +203,12 @@ class Furniture extends Product
     {
 
         $check = checkNum(["height" => $height]);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->height = $height;
+             
             $this->setFurnitureSpec();
         }
     }
@@ -215,11 +216,12 @@ class Furniture extends Product
     public function setLength(string $length)
     {
         $check = checkNum(["length" => $length]);
-        if ($check !== true) {
+        if ($check['state'] !== 'success') {
             $this->isValid = false;
-            $this->error_msg .= $check. "; ";
+            $this->error_msg .= $check['message']. "; ";
         } else {
             $this->length = $length;
+            
             $this->setFurnitureSpec();
         }
     }
@@ -241,7 +243,8 @@ class Furniture extends Product
 
     private function setFurnitureSpec() 
     {
-        if ($this->width && $this->height && $this->length){        
+
+        if (!is_null($this->width) && !is_null($this->height) && !is_null($this->length)){        
             $this->setSpec($this->height."X".$this->width."X".$this->length);
         }
     }
@@ -254,10 +257,10 @@ function createProductObject(array $jsonBody, bool $checkUnique=false, ?object $
 {     
     $type = $jsonBody['productType'];                // Check type. Ensure type is [Book, Furniture or DVD]
     $check = checkType(["productType" => $type ]);
-    if ($check !== true){
+    if ($check['state'] !== 'success'){
         return array( 
             'state' => 'error',
-            'message' => $check
+            'message' => $check['message']
         );   
     } 
 
