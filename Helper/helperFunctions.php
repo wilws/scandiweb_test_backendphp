@@ -2,9 +2,12 @@
 
 //  This is a collection of helper functions
 
-//  use JSend specification to return result.
-function jsendFormatter(string $status, array $content):string {
-    // If status = error, only $content[0] (error msg) is returned.
+
+function jsendFormatter(string $status, array $content) : string 
+{
+    /** Use JSend specification to return result.
+      * If status = error, only $content[0] (error msg) is returned.
+      */
 
     $return = [];
     switch ($status) {
@@ -28,6 +31,7 @@ function jsendFormatter(string $status, array $content):string {
                 "message" => $content[0]
             );
             break;
+
         default:
             return $return;      
     };
@@ -36,17 +40,17 @@ function jsendFormatter(string $status, array $content):string {
 }
 
 
-function checkNum(array $num_arry){
-
+function checkNum(array $num_arry)
+{
     $check = checkNull($num_arry);
-    if($check !== true){
+    if ($check !== true) {
         return $check;
     }
 
     $key = array_keys($num_arry)[0];
     $value = array_values($num_arry)[0];
 
-    if (!is_numeric($value)){
+    if (!is_numeric($value)) {
        return "Invalid '".$key. "' value. It should be a number";
     } else {
        return true;
@@ -54,10 +58,10 @@ function checkNum(array $num_arry){
 }
 
 
-function checkString(array $str_arr, int $len=0){
-    
+function checkString(array $str_arr, int $len=0)
+{
     $check = checkNull($str_arr);
-    if($check !== true){
+    if ($check !== true) {
         return $check;
     }
 
@@ -71,8 +75,8 @@ function checkString(array $str_arr, int $len=0){
     }
 }
 
-function checkType(array $str_arr){
-    // $key = array_keys($str_arr)[0];
+function checkType(array $str_arr)
+{
     $value = array_values($str_arr)[0];
     $allowed_types = array("DVD","Book","Furniture");
 
@@ -83,18 +87,20 @@ function checkType(array $str_arr){
     }
 }
 
-function checkNull(array $arr){
+function checkNull(array $arr)
+{
     $key = array_keys($arr)[0];
     $value = array_values($arr)[0];
     
-    if (is_null($value) or strlen(str_replace(" ","",$value)) <= 0 ){
+    if (is_null($value) or strlen(str_replace(" ","",$value)) <= 0 ) {
        return "'".$key. "' should not be Null";
     } else {
        return true;
     }
 }
 
-function checkNoOfRowInDB(string $data, string $table, string $colnum, object $db){
+function checkNoOfRowInDB(string $data, string $table, string $colnum, object $db) : Int
+{
         // Database involved function
         $sql = "SELECT * FROM $table WHERE $colnum='$data'";
         $fetch = $db->query($sql);

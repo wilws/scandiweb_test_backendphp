@@ -1,13 +1,17 @@
 <?php
-    class Router {
+
+    class Router 
+    {
         private string $routerName;
         private array $routerMap;
 
-        public function setRouterName(string $name){
+        public function setRouterName(string $name)
+        {
             $this->routerName = $name;
         }
 
-        public function setRouterMap(array $get,array $post,array $delete,array $put,array $patch){
+        public function setRouterMap(array $get,array $post,array $delete,array $put,array $patch)
+        {
             $this->routerMap = array(
                 'GET' => $get,
                 'POST' => $post,
@@ -17,11 +21,13 @@
             );
         }
 
-        public function getRouterName():string{
+        public function getRouterName() : string
+        {
             return $this->routerName;
         }
 
-        public function getrouterMap():array{
+        public function getrouterMap() : array
+        {
             return $this->routerMap;
         }
     }

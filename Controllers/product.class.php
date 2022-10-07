@@ -1,6 +1,7 @@
 <?php
 
-abstract class AbstractProduct {
+abstract class AbstractProduct 
+{
 
     protected ?string $name  = null;
     protected ?string $price = null;
@@ -11,44 +12,57 @@ abstract class AbstractProduct {
     
     abstract public function setName(string $name);
     abstract public function setPrice(string $price);
-    abstract public function setSku(string $sku, ?object $db=null);
+    abstract public function setSku(string $sku, bool $checkUnique=false, ?object $db=null);   
     abstract public function setSpec(string $spec);
     abstract public function setId(string $id);
 
-    public function getName() : string {
+    public function getName() : string 
+    {
         return $this->name;
     }
-    public function getPrice() : string {
+
+    public function getPrice() : string 
+    {
         return $this->price;
     }
-    public function getSku() : string {
+
+    public function getSku() : string 
+    {
         return $this->sku;
     }
-    public function getSpec() : string {
+
+    public function getSpec() : string 
+    {
         return $this->spec;
     }
-    public function getType() : string {
+
+    public function getType() : string 
+    {
         return $this->type;
     }
-    public function getId() : string {
+
+    public function getId() : string 
+    {
         return $this->id;
     }
 };
 
 
-class Product extends AbstractProduct {
+class Product extends AbstractProduct 
+{
 
     protected ?string $error_msg  = null;
     protected ?bool $isAllValid = null;
 
-
-    public function setId(string $id){
+    public function setId(string $id)
+    {
         $this->id = $id;
     }
 
-    public function setName(string $name){
+    public function setName(string $name)
+    {
         $check = checkString(["name" => $name],30);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -56,9 +70,10 @@ class Product extends AbstractProduct {
         }
     }
 
-    public function setPrice(string $price){
+    public function setPrice(string $price)
+    {
         $check = checkNum(["price" => $price]);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -66,18 +81,21 @@ class Product extends AbstractProduct {
         }
     }
 
-    public function setSku(string $sku, ?object $db=null){
+    public function setSku(string $sku, bool $checkUnique=false , ?object $db=null)
+    {
         $check = checkString(["sku" => $sku],30);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
-        } else {
 
-            // Check unique 
-            if ($db !== null){
-                if (checkNoOfRowInDB($sku,'ProductTable', 'sku', $db) > 0){
+        } else {
+            // Check if unique sku
+            if ($checkUnique) {
+                if (checkNoOfRowInDB($sku,'ProductTable', 'sku', $db) > 0) {
                     $this->isValid = false;
                     $this->error_msg .= 'The sku name is already used in other product. Please choose other name for the sku.';
+                    return;
+
                 } else {
                     $this->sku = $sku;
                 }
@@ -87,9 +105,10 @@ class Product extends AbstractProduct {
         }
     }
 
-    public function setType(string $type){
+    public function setType(string $type)
+    {
         $check = checkType(["type" => $type]);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -97,29 +116,34 @@ class Product extends AbstractProduct {
         }
     }
 
-    public function setSpec(string $spec){
+    public function setSpec(string $spec)
+    {
         $this->spec = $spec;
     }
 
-    public function getErrorMsg(): ?string{
+    public function getErrorMsg(): ?string
+    {
         return $this->error_msg;
     }
 
-    public function checkIsAllValid() : bool {
+    public function checkIsAllValid() : bool 
+    {
         return true;
     }
 }
 
 
 
-class Book extends Product {
+class Book extends Product 
+{
 
     protected ?string $weight = null;
 
-    public function setWeight(string $weight){
+    public function setWeight(string $weight)
+    {
+        
         $check = checkNum(["weight" => $weight]);
-    
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -127,21 +151,24 @@ class Book extends Product {
             $this->setSpec($this->weight);
         }
     }
-    public function getWeight() : string {
+
+    public function getWeight() : string 
+    {
         return $this->weight;
     }
 };
 
 
-class DVD extends Product {
+class DVD extends Product 
+{
 
     protected ?string $size = null;
-    protected ?array $check = null;
-
-    public function setSize(string $size){
+    
+    public function setSize(string $size)
+    {
 
         $check = checkNum(["size" => $size]);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -150,19 +177,20 @@ class DVD extends Product {
         }
     }
     public function getSize() : string {
-        return $this->Size;
+        return $this->size;
     }
 };
 
-class Furniture extends Product {
-
+class Furniture extends Product 
+{
     protected ?string $width  = null;
     protected ?string $length = null;
     protected ?string $height  = null;
 
-    public function setWidth(string $width){
+    public function setWidth(string $width)
+    {
         $check = checkNum(["width" => $width]);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -171,10 +199,11 @@ class Furniture extends Product {
         }
     }
 
-    public function setHeight(string $height){
+    public function setHeight(string $height)
+    {
 
         $check = checkNum(["height" => $height]);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -183,9 +212,10 @@ class Furniture extends Product {
         }
     }
 
-    public function setLength(string $length){
+    public function setLength(string $length)
+    {
         $check = checkNum(["length" => $length]);
-        if ($check !== true){
+        if ($check !== true) {
             $this->isValid = false;
             $this->error_msg .= $check. "; ";
         } else {
@@ -194,20 +224,24 @@ class Furniture extends Product {
         }
     }
 
-    public function getLength() : string {
+    public function getLength() : string 
+    {
         return $this->length;
     }
 
-    public function getWidth() : string {
+    public function getWidth() : string 
+    {
         return $this->width;
     }
 
-    public function getHeight() : string {
+    public function getHeight() : string 
+    {
         return $this->height;
     }
 
-    private function setFurnitureSpec() {
-        if ($this->width && $this->height && $this->length){
+    private function setFurnitureSpec() 
+    {
+        if ($this->width && $this->height && $this->length){        
             $this->setSpec($this->height."X".$this->width."X".$this->length);
         }
     }
@@ -216,51 +250,51 @@ class Furniture extends Product {
 
 
 // non-routing function  
-function createProductObject(array $json_content, ?object $db = null) : array {     // if no $db object, sku's uniqueness will not be checked in db.
-       
-        $type = $json_content['productType'];                // Check type. Ensure type is the [Book, Furniture or DVD]
-        $check = checkType(["productType" => $type ]);
-        if ($check !== true){
-            return array( 
-                'state' => 'error',
-                'message' => $check
-            );   
-        } 
+function createProductObject(array $jsonBody, bool $checkUnique=false, ?object $db=null) : array 
+{     
+    $type = $jsonBody['productType'];                // Check type. Ensure type is [Book, Furniture or DVD]
+    $check = checkType(["productType" => $type ]);
+    if ($check !== true){
+        return array( 
+            'state' => 'error',
+            'message' => $check
+        );   
+    } 
 
-        $product = null;                                        
-        eval('$product = new '.$type.'();');                 // Create a product object
-        if ($product == null) {  
+    $product = null;                                        
+    eval('$product = new '.$type.'();');                 // Create a product object
+    if ($product == null) {                              // If not success, return error
+        return array( 
+            'state' => 'error',
+            'message' => 'Cannot create product object',
+        );                           
+    
+    } else {                                            // If creation success, set properties   
+
+        $product->setSku($jsonBody['sku'],$checkUnique,$db);
+        $product->setPrice($jsonBody['price']);
+        $product->setName($jsonBody['name']);
+        $product->setType($jsonBody['productType']);
+        isset($jsonBody['weight'])? $product->setWeight($jsonBody['weight']):null;
+        isset($jsonBody['size'])? $product->setSize($jsonBody['size']):null;
+        isset($jsonBody['height'])? $product->setHeight($jsonBody['height']):null;
+        isset($jsonBody['length'])? $product->setLength($jsonBody['length']):null;
+        isset($jsonBody['width'])? $product->setWidth($jsonBody['width']):null;
+        isset($jsonBody['spec'])? $product->setSpec($jsonBody['spec']):null;
+        isset($jsonBody['id'])? $product->setId($jsonBody['id']):null;
+
+        $err_msg = $product->getErrorMsg();
+        if($err_msg){
             return array( 
                 'state' => 'error',
-                'message' => 'Cannot create product object',
-            );                           // If creation success, set properties   
-      
+                'message' => $err_msg,
+            );
         } else {
-
-            $product->setSku($json_content['sku'],$db);
-            $product->setPrice($json_content['price']);
-            $product->setName($json_content['name']);
-            $product->setType($json_content['productType']);
-            isset($json_content['weight'])? $product->setWeight($json_content['weight']):null;
-            isset($json_content['size'])? $product->setSize($json_content['size']):null;
-            isset($json_content['height'])? $product->setHeight($json_content['height']):null;
-            isset($json_content['length'])? $product->setLength($json_content['length']):null;
-            isset($json_content['width'])? $product->setWidth($json_content['width']):null;
-            isset($json_content['spec'])? $product->setSpec($json_content['spec']):null;
-            isset($json_content['id'])? $product->setId($json_content['id']):null;
-
-            $err_msg = $product->getErrorMsg();
-            if($err_msg){
-                return array( 
-                    'state' => 'error',
-                    'message' => $err_msg,
-                );
-            } else {
-                return array(
-                    'state' => 'success',
-                    'data' => $product,
-                );
-            }
+            return array(
+                'state' => 'success',
+                'data' => $product,
+            );
         }
     }
+}
 ?>
