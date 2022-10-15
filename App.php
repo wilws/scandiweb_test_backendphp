@@ -1,4 +1,5 @@
 <?php
+    
 
     class App 
     {
@@ -62,8 +63,9 @@
             $register = $this->routers[$this->apiGroupName][$this->method];    // To store the "API:Func" mapping object. Assign a correct register according to the method (eg: GET / POST / DELETE )
             $response_func = $register['/'.$this->params[0]] ?? NULL;          // If in the register no route is matched, set correspondent function $response_fun as "NULL"
 
-            if (!$response_func) {                                             // if no function is matched with the API, 
-                echo jsendFormatter('error',['No such API']);                  // Return error
+            if (!$response_func) {   
+                                                          // if no function is matched with the API, 
+                echo Helper::jsendFormatter('error',['No such API']);                  // Return error
                 return;
             } 
             echo call_user_func($response_func ,$this->params,$this->jsonBody, $this->db);     // Otherwise pass the function name  and execute 

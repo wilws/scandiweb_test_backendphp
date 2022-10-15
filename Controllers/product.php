@@ -1,12 +1,14 @@
 <?php
 
 require PATH .'/Models/product.php';
-require PATH .'/Controllers/product.class.php';
-require_once PATH .'/Helper/helperFunctions.php';
+require PATH .'/Controllers/book.class.php';
+require PATH .'/Controllers/dvd.class.php';
+require PATH .'/Controllers/furniture.class.php';
+
 
 class ProductController 
 {
-
+    
     // GET /product/get-products
     public static function getProducts(array $params, array $jsonBody, object $db) : string 
     {
@@ -17,7 +19,8 @@ class ProductController
 
             $sanitised_output = [];
             foreach ($records as $record) {
-                $product= createProductObject($record);              // Create Product object for each record
+ 
+                $product= self::createProductObject($record);              // Create Product object for each record
                 $productObj = $product['data'];
                 
                 array_push($sanitised_output,
@@ -31,9 +34,9 @@ class ProductController
                     )
                 );
             }
-            $result = jsendFormatter('success',$sanitised_output);
+            $result = Helper::jsendFormatter('success',$sanitised_output);
         } else {
-            $result = jsendFormatter('error', [$db -> error]);
+            $result = Helper::jsendFormatter('error', [$db -> error]);
         }
 
         return $result ;
@@ -44,9 +47,10 @@ class ProductController
     public static function createProduct(array $params, array $jsonBody, object $db) : string 
     {
 
-        $result = createProductObject($jsonBody,true,$db);
+       
+        $result = self::createProductObject($jsonBody,true,$db);
         if ($result['state'] !== 'success') {
-            return jsendFormatter('error', [$result['message']]);
+            return Helper::jsendFormatter('error', [$result['message']]);
         } 
         
         $product = $result['data'];
@@ -60,9 +64,9 @@ class ProductController
         );
 
         if (!$result){
-            return jsendFormatter('error', ['Cannot write product into database']); 
+            return Helper::jsendFormatter('error', ['Cannot write product into database']); 
         } else {
-            return jsendFormatter('success', array(
+            return Helper::jsendFormatter('success', array(
                     'result'=> "Product '".$product->getName()."' is created successfully",
                     'id'=> $db ->insert_id
                 )
@@ -77,14 +81,63 @@ class ProductController
         $ProductModel = new ProductModel($db);
         $result = $ProductModel->deleteProducts($removeList);
         if (!$result){
-            return jsendFormatter('error', ['Delete failed']); 
+            return Helper::jsendFormatter('error', ['Delete failed']); 
         } else {
             $idString = join(',',$removeList);
-            return jsendFormatter('success', array(
+            return Helper::jsendFormatter('success', array(
                 'result'=> "items (id = $idString) are deleted.")
             );            
         }
+    }
 
+    // Non-Routing function
+    private static function createProductObject(array $jsonBody, bool $checkUnique=false, ?object $db=null) : array 
+    {     
+        $Helper = new Helper();
+        $type = $jsonBody['productType'];                // Check type. Ensure type is [Book, Furniture or DVD]
+        $check = $Helper->checkType(["productType" => $type ]);
+        if ($check['state'] !== 'success'){
+            return array( 
+                'state' => 'error',
+                'message' => $check['message']
+            );   
+        } 
+
+        $product = null;                                        
+        eval('$product = new '.$type.'();');                 // Create a product object
+        if ($product == null) {                              // If not success, return error
+            return array( 
+                'state' => 'error',
+                'message' => 'Cannot create product object',
+            );                           
+        
+        } else {                                            // If creation success, set properties   
+
+            $product->setSku($jsonBody['sku'],$checkUnique,$db);
+            $product->setPrice($jsonBody['price']);
+            $product->setName($jsonBody['name']);
+            $product->setType($jsonBody['productType']);
+            isset($jsonBody['weight'])? $product->setWeight($jsonBody['weight']):null;
+            isset($jsonBody['size'])? $product->setSize($jsonBody['size']):null;
+            isset($jsonBody['height'])? $product->setHeight($jsonBody['height']):null;
+            isset($jsonBody['length'])? $product->setLength($jsonBody['length']):null;
+            isset($jsonBody['width'])? $product->setWidth($jsonBody['width']):null;
+            isset($jsonBody['spec'])? $product->setSpec($jsonBody['spec']):null;
+            isset($jsonBody['id'])? $product->setId($jsonBody['id']):null;
+
+            $err_msg = $product->getErrorMsg();
+            if($err_msg){
+                return array( 
+                    'state' => 'error',
+                    'message' => $err_msg,
+                );
+            } else {
+                return array(
+                    'state' => 'success',
+                    'data' => $product,
+                );
+            }
+        }
     }
 }
 

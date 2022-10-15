@@ -1,5 +1,4 @@
 <?php
-
     require PATH .'/Controllers/product.php' ;
     $productRouter = new Router();
     $productRouter->setRouterName("product");

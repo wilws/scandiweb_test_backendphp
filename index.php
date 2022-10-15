@@ -3,7 +3,7 @@
     define('PATH', getcwd());
 
     require PATH .'/app.php';
-    require PATH .'/Helper/helperFunctions.php';
+    require PATH .'/Helper/helper.class.php';
     require PATH .'/Models/database.php';  
     require PATH .'/Routers/router.php';
     require PATH .'/Routers/product.php'; 

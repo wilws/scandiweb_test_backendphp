@@ -1,7 +1,6 @@
 <?php
     require_once PATH .'/Models/database.php';
     require_once PATH .'/Models/model.php';
-    require_once PATH .'/Helper/helperFunctions.php';
 
     
     Class ProductModel extends Model
