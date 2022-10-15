@@ -11,7 +11,7 @@
     // head config.
     header("Access-Control-Allow-Origin: * ");    
     header("Content-Type: application/json");
-    header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PUT, PATCH");
+    header("Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
     $app = new App($_SERVER['REQUEST_URI'],$_SERVER["REQUEST_METHOD"],file_get_contents('php://input'));
